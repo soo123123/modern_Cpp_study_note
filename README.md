@@ -11,13 +11,23 @@ Book name : Effective Modern C++
 ---
 
 ## 소개
+**타입추론(type inference)** : auto 키워드를 사용하면 초깃값의 형식에 맟춰 선언하는 인스턴스(변수)의 형식이 '자동'으로 결정된다.
 **이동 의미론(move semantics)**
 - **오른값에 해당하는 표현식과 왼값에 해당하는 표현식이 구분된다는 점에 근거한다.**
     - **표현식** : 평가되면 값이나 객체가 되는 코드 조각
 - 복사하지 말고, 자원의 '소유권'을 통째로 넘겨서 비용을 없애는 규칙
 
+```
+class Widget {
+public:
+    Widget(Widget&& rhs)
+}
+```
+**매개변수의 타입이 rvalue 참조라도, 매개변수라는 ‘변수명’ 자체는 항상 lvalue다.**
+
+
 ---
 https://ddukddaksudal.tistory.com/155
 https://boycoding.tistory.com/207#google_vignette
 https://boycoding.tistory.com/category
-p.3
+p.10
