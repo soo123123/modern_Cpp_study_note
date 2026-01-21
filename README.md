@@ -25,9 +25,63 @@ public:
 ```
 **매개변수의 타입이 rvalue 참조라도, 매개변수라는 ‘변수명’ 자체는 항상 lvalue다.**
 
+## 1장 형식 연역
+**항목 1: 템플릿 형식 연역 규칙을 숙지하라**
+    **참조 형식(reference type)** : 어떤 객체에 붙은 또 하나의 이름
+    **포인터(pointer)** : 주소를 담는 변수
 
+```
+템플릿 의사코드
+template<typename T>
+void f(ParamType param);
+
+f(expr);    // expr로부터 T와 ParamType을 연역
+```
+
+**경우 1: ParamType이 포인터 또는 참조 형식이지만 보편 참조는 아님**
+```
+// 예시 코드
+template<typename T>
+void f(T& param);
+
+int x = 1;
+const int cx = x;
+const int& rx = x;
+
+f(x);       /* T == int, param == int& */
+f(cx);      /* T == const int, param == const int& */
+f(rx);      /* T == const int, param == const int& */
+```
+
+```
+// 예시코드
+template<typename T>
+void f(const T& param);
+
+int x = 1;
+const int cx = x;
+const int& rx = x;
+
+f(x);       /* T == int, param == const int& */
+f(cx);      /* T == int, param == const int& */
+f(rx);      /* T == int, param == const int& */
+```
+
+```
+// 예시코드
+template<typename T>
+void f(T* param);
+
+int x = 27;
+const int *px = &x;
+
+f(&x);      /* T == int, param == int* */
+f(px);      /* T == const int, param == const int* */
+```
+
+**경우 2: ParamType이 보편 참조임**
 ---
 https://ddukddaksudal.tistory.com/155
 https://boycoding.tistory.com/207#google_vignette
 https://boycoding.tistory.com/category
-p.10
+p.13
