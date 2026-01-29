@@ -112,8 +112,45 @@ f(27); // T == int AND param == int&&
 ---
 
 **경우 3: ParamType이 포인터도 아니고 참조도 아님**
+**포인터** : 주소값을 저장하는 변수
+**참조** : 주소를 내부적으로 사용하지만, 변수로 저장하지 않는 별명
+    - 또 다른 이름(alias)로 보장되는 건 참조뿐이다.
+
+ParamType이 포인터도 아니고 참조도 아니라면, 인수가 함수에 값으로 전달(pass-by-value)되는 상황인 것이다.
+
+param이 새로운 객체라는 사실 때문에, expr에서 T가 연역되는 과정에서 다음과 같은 규칙들이 적용된다.
+1. 이전처럼, 만일 expr의 형식이 참조이면, 참조 부분은 무시한다.
+2. expr의 참조성을 무시한 후, 만일 expr이 const이면 그 const 역시 무시한다.
+
+```
+template<typename T>
+void f(T param);
+
+int x = 27;
+const int cx = x;
+const int& rx = x; // 수정만 불가능한 x 참조 느낌.
+
+f(x);   // T && param == int
+f(cx);  // T && param == int
+f(rx);  // T && param == int
+```
+cx와 rx가 수정될 수 없다는 점은 param의 수정 가능 여부와는 전혀 무관하다. expr을 수정할 수 없다고 해서, 그 복사본까지 수정할 수 없는 것은 아니다.
+
+**expr이 const 객체를 가리키는 포인터이고 param에 값으로 전달되는 경우**
+```
+template<typename T>
+void f(T param);
+
+// const char를 가리키는 포인터 자체도 cosnt
+const char* const ptr = 
+"Fun with pointers";
+
+f(ptr);
+```
+**const는 자기 왼쪽을 수식하고, 왼쪽에 없으면 오른쪽을 수식함.**
+
 ---
 https://ddukddaksudal.tistory.com/155
 https://boycoding.tistory.com/207#google_vignette
 https://boycoding.tistory.com/category
-p.14
+p.15
