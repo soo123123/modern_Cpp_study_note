@@ -145,9 +145,46 @@ void f(T param);
 const char* const ptr = 
 "Fun with pointers";
 
-f(ptr);
+f(ptr); // call-by-value 형태로 동작함.
+// 함수 내부에서만 주소가 바뀌고 원본 포인터와는 관계가 없다.
 ```
 **const는 자기 왼쪽을 수식하고, 왼쪽에 없으면 오른쪽을 수식함.**
+    - **수식한다** : 어떤 대상에 제약(의미)을 덧붙인다
+
+**배열 인수**
+- 배열과 포인터를 맞바꿔 쓸 수 있는 것처럼 보이는 환상의 주된 원인은, 많은 문맥에서 배열이 배열의 첫 원소를 가리키는 포인터로 붕괴한다(decay)는 점이다.
+```
+// 배열 형식의 함수 매개변수라는 것은 없다.
+void myFunc(int param[]);
+void myFunc(int* param);    //위와 동일한 함수
+```
+
+- 함수의 매개변수를 진짜 배열로 선언 할 수는 없지만, 배열에 대한 참조로 선언할 수는 있다.
+```
+template<typename T>
+void f(T& param);
+
+f(name);    //T == const char[13], expr == const char (&)[13]
+```
+
+- 배열에 대한 참조를 선언하는 능력을 이용하면 배열에 담긴 원소들의 개수를 연역하는 템플릿을 만들 수 있다.
+```
+// 배열 매개변수에 이름을 붙이지 않은 것은, 이 템플릿에 필요한 것은 배열에 담긴 원소의 개수뿐이기 때문이다.
+template<typename T, std::size_t N>
+constexpr std::size_t arraySize(T (&)[N]) noexcept
+{
+    return N;
+}
+
+int keyVals[] = {1, 3, 7, 9, 11, 22, 35};
+
+int mappedVals[arraySize(keyVals)];
+
+std::array<int, arraySize(keyVals)> mappedVals;
+```
+- constexpr로 선언하면 함수 호출의 결과를 컴파일 도중에 사용할 수 있게 된다.
+
+# 시작할 때 이거 지우고 위 내용 부터 학습 시작 할 것.
 
 ---
 https://ddukddaksudal.tistory.com/155
